@@ -10,7 +10,6 @@ class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
     #
     
     def	registerExtenderCallbacks(self, callbacks):
-    
         # keep a reference to our callbacks object
         self._callbacks = callbacks
         
@@ -23,14 +22,11 @@ class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
         # register ourselves as a message editor tab factory
         callbacks.registerMessageEditorTabFactory(self)
         
-        return
-        
     # 
     # implement IMessageEditorTabFactory
     #
     
     def createNewInstance(self, controller, editable):
-        
         # create a new instance of our custom editor tab
         return Base64InputTab(self, controller, editable)
         
@@ -39,7 +35,6 @@ class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
 #
 
 class Base64InputTab(IMessageEditorTab):
-
     def __init__(self, extender, controller, editable):
         self._extender = extender
         self._editable = editable
@@ -47,7 +42,6 @@ class Base64InputTab(IMessageEditorTab):
         # create an instance of Burp's text editor, to display our deserialized data
         self._txtInput = extender._callbacks.createTextEditor()
         self._txtInput.setEditable(editable)
-        return
         
     #
     # implement IMessageEditorTab
@@ -64,7 +58,7 @@ class Base64InputTab(IMessageEditorTab):
         return isRequest and not self._extender._helpers.getRequestParameter(content, "data") is None
         
     def setMessage(self, content, isRequest):
-        if (content is None):
+        if content is None:
             # clear our display
             self._txtInput.setText(None)
             self._txtInput.setEditable(False)
@@ -79,11 +73,10 @@ class Base64InputTab(IMessageEditorTab):
         
         # remember the displayed content
         self._currentMessage = content
-        return
     
     def getMessage(self):
         # determine whether the user modified the deserialized data
-        if (self._txtInput.isTextModified()):
+        if self._txtInput.isTextModified():
             # reserialize the data
             text = self._txtInput.getText()
             input = self._extender._helpers.urlEncode(self._extender._helpers.base64Encode(text))
@@ -95,10 +88,7 @@ class Base64InputTab(IMessageEditorTab):
             return self._currentMessage
     
     def isModified(self):
-        
         return self._txtInput.isTextModified()
     
     def getSelectedData(self):
-        
         return self._txtInput.getSelectedText()
-            
